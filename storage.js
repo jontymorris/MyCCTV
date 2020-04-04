@@ -170,6 +170,8 @@ class Storage{
     // Setup tables
     dbSetup(){
 
+        console.log("Setting up tables")
+
         var cameraTable = `
         CREATE TABLE Cameras (
             ID INT AUTO_INCREMENT,
@@ -181,12 +183,12 @@ class Storage{
         );`
 
         this.db.query(cameraTable).then(result => {
-            console.log('Created `cameraTable` Table\n')
+            console.log('Created `cameraTable` Table')
         }).catch(error => {
             if(!error.message.includes('ER_TABLE_EXISTS_ERROR'))
                 throw error;
             else
-                console.log('`cameraTable` already exists\n')
+                console.log('`cameraTable` already exists')
         });
 
         var imageRecordTable = `
@@ -197,12 +199,12 @@ class Storage{
         );`
 
         this.db.query(imageRecordTable).then(result => {
-            console.log('Created `imageRecordTable` SQL Table\n')
+            console.log('Created `imageRecordTable` SQL Table')
         }).catch(error => {
             if(!error.message.includes('ER_TABLE_EXISTS_ERROR'))
                 throw error;
             else
-                console.log('`imageRecordTable` already exists\n')
+                console.log('`imageRecordTable` already exists')
         });
         
     }
@@ -222,17 +224,19 @@ class Storage{
     }
 
     // Return date-ordered list of image urls
-    getCameraImages(camera){
+    getCameraImages(id){
         return new Promise((resolve, reject) => {
             this.db.query(`
                 SELECT File_Name, Time_Taken
                 FROM ImageRecord
-                WHERE ID = ${camera.id} ORDER BY Time_Taken;
+                WHERE ID = ${id} ORDER BY Time_Taken;
             `).then(responce => {
                 resolve(responce);
             }).catch(err => {reject(err);});
         })
     }
+
+    
 
 }
 
