@@ -1,6 +1,7 @@
 var fs = require('fs');
 var mysql = require('mysql');
 var request = require('request');
+var config = require('./config');
 
 class Camera {
 
@@ -72,12 +73,7 @@ class Storage{
         }
 
         // Init database
-        this.db = new Database({
-            host: "localhost",
-            user: 'arun',
-            password: 'password',
-            database: 'MyCCTV'
-        });
+        this.db = new Database(config.database);
         this.dbSetup();
 
     }

@@ -1,11 +1,11 @@
 var express = require("express");
 var store = require('./storage');
+var config = require('./config')
 require('console-stamp')(console, {
     'pattern': 'HH:MM:ss',
     'label': false
 });
 
-var port = 80;
 var app = express();
 var s = new store.Storage();
 
@@ -36,8 +36,8 @@ app.get("/getImages", (req, res, next) => {
         
 });
 
-app.listen(port, () => {    
-    console.log("Server running on port " + port);
+app.listen(config.port, () => {    
+    console.log("Server running on port " + config.port);
 
     // Update Cameras
     s.getCameras().then(cameras => {

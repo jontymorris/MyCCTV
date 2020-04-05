@@ -1,5 +1,5 @@
 {
-  "name": "My_CCTV",
+  "name": "MyCCTV",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -13,7 +13,6 @@
     "console-stamp": "^0.2.9",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.5"
+    "request": "^2.88.2"
   }
 }
