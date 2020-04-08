@@ -28,9 +28,9 @@ cameraSchema.methods.isReady = function () {
 }
 
 var CameraModel = mongoose.model('Camera', cameraSchema);
+module.exports = CameraModel;
 
 module.exports.get = function (callback, limit) {
     CameraModel.find(callback).limit(limit);
 }
-module.exports = CameraModel;
 
