@@ -3,12 +3,7 @@ var config = {};
 // Server General
 config.port = 80;
 
-// MySQL Connection
-config.database = {
-    host: 'localhost',
-    user: 'arun',
-    password: 'password',
-    database: 'MyCCTV'
-}
+// Save Settings
+config.saveLocation = './images/';
 
 module.exports = config;
