@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 
+// Holds each camera's source
 var cameraSchema = new mongoose.Schema({
     name: {type: String, required:true},
     location: String,
@@ -8,6 +9,7 @@ var cameraSchema = new mongoose.Schema({
     images: [{}]
 })
 
+// Check if feed is updated
 cameraSchema.methods.isReady = function () {
     // No ref img, allow capture now
     if(this.images.length < 1){
@@ -27,8 +29,8 @@ cameraSchema.methods.isReady = function () {
 
 var CameraModel = mongoose.model('Camera', cameraSchema);
 
-module.exports = CameraModel;
-
 module.exports.get = function (callback, limit) {
     CameraModel.find(callback).limit(limit);
 }
+module.exports = CameraModel;
+

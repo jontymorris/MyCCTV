@@ -2,17 +2,21 @@ var Camera = require('../models/cameraModel');
 
 exports.index = function (req, res) {
     Camera.get(function (err, cameras) {
-        if (err) {
+        if (err)
             res.json({
                 status: "error",
                 message: err,
             });
+        
+        else {
+            console.log(`\n[API] Cameras requested\n`);
+
+            res.json({
+                status: "success",
+                message: "Camera retrieved successfully",
+                data: cameras
+            });
         }
-        res.json({
-            status: "success",
-            message: "Camera retrieved successfully",
-            data: cameras
-        });
     });
 };
 
@@ -20,18 +24,18 @@ exports.index = function (req, res) {
 exports.new = function (req, res) {
     var camera = new Camera(req.body);
 
-    console.log("\nNew Camera Added");
-    console.log(camera + "\n");
-    
     // save the camera and check for errors
     camera.save(function (err) {
          if (err)
             res.json(err);
-        else
+        else {
+            console.log(`\n[API] Camera added: ${camera}\n`);
+
             res.json({
                 message: 'New camera added!',
                 data: camera
             });
+        }
     });
 };
 
@@ -40,14 +44,19 @@ exports.view = function (req, res) {
     Camera.findById(req.params.id, function (err, camera) {
         if (err)
             res.send(err);
-        res.json({
-            message: 'Camera details loading..',
-            data: camera
-        });
+        
+        else{
+            console.log(`\n[API] Camera ${camera._id} requested\n`);
+
+            res.json({
+                message: 'Camera details loading...',
+                data: camera
+            });
+        }
     });
 };
 
-// Handle update contact info
+// Handle update camera info
 exports.update = function (req, res) {Camera.findById(req.params.id, function (err, camera) {
         if (err)
             res.send(err);
@@ -61,10 +70,14 @@ exports.update = function (req, res) {Camera.findById(req.params.id, function (e
         camera.save(function (err) {
             if (err)
                 res.json(err);
-            res.json({
-                message: 'Camera Info updated',
-                data: camera
-            });
+            else{
+                console.log(`\n[API] Camera ${camera._id} updated\n`);
+
+                res.json({
+                    message: 'Camera Info updated',
+                    data: camera
+                });
+            }
         });
     });
 };
@@ -76,9 +89,13 @@ exports.delete = function (req, res) {
     }, function (err, camera) {
         if (err)
             res.send(err);
-        res.json({
-            status: "success",
-            message: 'Camera deleted'
-        });
+        else{
+            console.log(`\n[API] Camera ${camera._id} deleted\n`);
+
+            res.json({
+                status: "success",
+                message: 'Camera deleted'
+            });
+        }
     });
 };

@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// db
+// connect to mongo db
 mongoose.connect(
     'mongodb://localhost/MyCCTV',{
         useNewUrlParser: true,
@@ -33,7 +33,7 @@ app.use('/api', apiRoutes);
 
 // start server
 app.listen(config.port, function(){
-    console.log('[Webserver] now running on port ' + config.port);
+    console.log(`[Webserver] live @ localhost:${config.port}/api`);
 });
 
 // start scrapping

@@ -6,12 +6,13 @@ var Camera = require('./api/models/cameraModel');
 class Scrapper {
 
     constructor(){
-        // Create paths
+        // create image save folder
         if (!fs.existsSync(config.saveLocation)){
             fs.mkdirSync(config.saveLocation);
         }
     }
 
+    // download feeds until stopped
     start(){
 
         var s = this;
@@ -38,7 +39,7 @@ class Scrapper {
 
             });
         
-        }, 3000)
+        }, config.tickRate)
         
     }
 
@@ -92,7 +93,7 @@ class Scrapper {
             // Download feed
             getLiveFeeds(camera).then(path => {
                 
-                // Create new file refrence
+                // Create new file reference
                 var imageRef = {
                     'fileName': path,
                     'timeTaken': new Date()
@@ -106,7 +107,7 @@ class Scrapper {
                 });
 
             }).catch(err => {
-                console.log(err)
+                console.log(err);
             });
         });
 
