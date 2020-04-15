@@ -15,10 +15,12 @@ Run `npm install` to install required modules
 ### Start the server
 
 Simply run the following command
-`node server.js`
+
+`npm run [all/server/client]`
+> 'all' runs both server client
 
 ### REST API
-In the case you don't want to use the provided Frontend **(coming soon)**, here are the API Calls you may need.
+In the case you don't want to use the provided Frontend, here are the API Calls you may need.
 
 ### Get all cameras
 
@@ -30,24 +32,31 @@ In the case you don't want to use the provided Frontend **(coming soon)**, here 
     "status":"success",
     "message":"Camera retrieved successfully",
     "data":[
-        {"images":[...],
+        {"images":[],
         "_id":"5e8d271c7d4d6b06ff8ea183",
         "name":"A skate park",
         "ip":"...",
         "refreshRate":60,
         "location":"Somewhere",
-        "__v":11}
-        ....
+        "__v":11},
     ]
 }
+```
+
+### Get a single camera
+
+#### Request
+`[GET] /camera/:id`
+#### Parameters
+```
+'id' of Camera to get
 ```
 
 ### Add a camera
 
 #### Request
 `[POST] /cameras`
-
-**params**
+#### Parameters
 ```
 'name'
 'location' (optional)
@@ -59,18 +68,19 @@ In the case you don't want to use the provided Frontend **(coming soon)**, here 
 
 #### Request
 `[DELETE] /camera/:id`
+#### Parameters
+```
+'id' of Camera to delete
+```
 
 ### Modify a camera
 
 #### Request
 `[PUT/PATCH] /camera/:id`
-
-**params**
+#### Parameters
 ```
 'name'
 'location' (optional)
 'refreshRate'
 'ip'
 ```
-
-
