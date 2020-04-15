@@ -30,6 +30,8 @@ else
 // setup routing
 var apiRoutes = require('./api/routes/cameraRoute')
 app.use('/api', apiRoutes);
+app.use('/api/images', express.static(config.saveLocation))
+
 
 // start server
 app.listen(config.port, function(){

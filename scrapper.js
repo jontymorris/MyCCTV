@@ -5,113 +5,120 @@ var Camera = require('./api/models/cameraModel');
 
 class Scrapper {
 
-    constructor(){
-        // create image save folder
-        if (!fs.existsSync(config.saveLocation)){
-            fs.mkdirSync(config.saveLocation);
+  constructor() {
+
+    this.interval;
+
+    // Create folder for saving feeds
+    if (!fs.existsSync(config.saveLocation)) {
+      fs.mkdirSync(config.saveLocation);
+    }
+
+  }
+
+  // Start scrapping feeds
+  start() {
+
+    var scrape = this;
+
+    // Run every tick (defined in config)
+    this.interval = setInterval(function() {
+
+      // Grab cameras
+      Camera.find({}, function(err, cameras) {
+
+        // Loop through each camera
+        for (let i = 0; i < cameras.length; i++) {
+
+          // Has it had time to update?
+          if (cameras[i].isReady()) {
+            console.log(
+              '[' + new Date() + ']' +
+              " Taking photo - " + cameras[i].name
+            )
+            scrape.captureFeed(cameras[i]['_id']);
+          }
+
         }
-    }
 
-    // download feeds until stopped
-    start(){
+      });
 
-        var s = this;
-        
-        // Run every 3 seconds
-        setInterval(function(){
+    }, config.tickRate)
 
-            // Grab cameras
-            Camera.find({}, function(err, cameras) {
+  }
 
-                // Loop through each camera
-                for (let i = 0; i < cameras.length; i++) {
+  // Stop scrapping feeds
+  stop(){
+    clearInterval(this.interval)
+  }
 
-                    // Has it had time to update?
-                    if (cameras[i].isReady()){
-                        console.log(
-                            '[' + new Date() + ']' + 
-                            " Taking photo - " + cameras[i].name
-                        )
-                        s.captureFeed(cameras[i]['_id']);
-                    }
-            
-                }
+  // Download feed from source
+  getLiveFeed(camera) {
+    return new Promise((resolve, reject) => {
 
-            });
-        
-        }, config.tickRate)
-        
-    }
+      request.head(camera.ip, function(err, res, body) {
 
-    // Download feed from source
-    getLiveFeed(camera){
-        return new Promise((resolve, reject) => {
+        if (!err) {
 
-            request.head(camera.ip, function(err, res, body){
+          // Create file path
+          var fileType = res.headers['content-type'].split('/')[1]
+          var fileName = `${camera._id}_${Date.now()}.${fileType}`
+          var filePath = config.saveLocation + fileName;
 
-                if (!err){
-    
-                    // Create file path
-                    var fileType = res.headers['content-type'].split('/')[1]
-                    var fileName = `${camera._id}_${Date.now()}.${fileType}`
-                    var filePath = config.saveLocation + fileName;
-    
-                    // Save image on disk
-                    request(camera.ip).pipe(fs.createWriteStream(filePath)).on('close', function(){
-                        resolve(filePath);
-                    });
-                }
-    
-                else {
-                    console.log('Couldnt download ' + camera.ip);
-                    reject(err);
-                }
-            });
-        });
-    }
+          // Save image on disk
+          request(camera.ip).pipe(fs.createWriteStream(filePath)).on('close', function() {
+            resolve(filePath);
+          });
+        } else {
+          console.log('Couldnt download ' + camera.ip);
+          reject(err);
+        }
+      });
+    });
+  }
 
-    // Save image on file with link in db
-    captureFeed(camera_id){
-        
-        var getLiveFeeds = this.getLiveFeed;
+  // Save image on file with link in db
+  captureFeed(camera_id) {
 
-        Camera.findById(camera_id).exec(function (err, camera){
-            
-            if (err){
-                if(err.name == "CastError")
-                    console.log("Cannot Take Image - Invalid ID");
-                else
-                    console.log(err);
-                return
-            }
+    var getLiveFeeds = this.getLiveFeed;
 
-            if (!camera){
-                console.log("Cannot Take Image - Invalid ID");
-                return
-            }
+    Camera.findById(camera_id).exec(function(err, camera) {
 
-            // Download feed
-            getLiveFeeds(camera).then(path => {
-                
-                // Create new file reference
-                var imageRef = {
-                    'fileName': path,
-                    'timeTaken': new Date()
-                }
+      if (err) {
+        if (err.name == "CastError")
+          console.log("Cannot Take Image - Invalid ID");
+        else
+          console.log(err);
+        return
+      }
 
-                // Update list of images for camera
-                camera.images.push(imageRef);
-                camera.save(function(err) {
-                    if (err)
-                        throw err;
-                });
+      if (!camera) {
+        console.log("Cannot Take Image - Invalid ID");
+        return
+      }
 
-            }).catch(err => {
-                console.log(err);
-            });
+      // Download feed
+      getLiveFeeds(camera).then(path => {
+
+        // Create new file reference
+        var imageRef = {
+          'fileName': path,
+          'timeTaken': new Date()
+        }
+
+        // Update list of images for camera
+        camera.images.push(imageRef);
+        camera.save(function(err) {
+          if (err)
+            throw err;
         });
 
-    }
+      }).catch(err => {
+        console.log(err);
+      });
+    });
+
+  }
 
 }
 
