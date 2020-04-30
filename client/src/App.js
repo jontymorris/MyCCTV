@@ -52,14 +52,14 @@ import './App.css';
   
       this.state = {
         interval: '',
-        camera: '' // live camera properties
+        camera: props.cam
       }
     }
   
     componentDidMount() {
   
       var refreshRate = (
-        this.props.cam.refreshRate * 1000
+        this.state.camera.refreshRate * 1000
       )
   
       var interval_ = setInterval(() => {
@@ -83,7 +83,7 @@ import './App.css';
     getCameraInfo() {
   
       return new Promise((resolve, reject) => {
-        fetch(`/api/camera/${this.props.cam._id}`)
+        fetch(`/api/camera/${this.state.camera._id}`)
           .then(res => res.json())
           .then(
             (result) => {
@@ -95,12 +95,18 @@ import './App.css';
     }
   
     render() {
+      var latestImage = (
+        this.state.camera.images[
+          this.state.camera.images.length - 1
+        ]['fileName']
+      );
+      console.log('updated ' + this.state.camera.name)
       return (
         <span>
             <img
             className = "camera"
             src = {
-                this.props.cam.ip
+              latestImage
             }
             />
         </span>

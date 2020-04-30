@@ -20,7 +20,7 @@ exports.index = function (req, res) {
     });
 };
 
-// Handle create contact actions
+// Handle create camera actions
 exports.new = function (req, res) {
     var camera = new Camera(req.body);
 
@@ -39,7 +39,7 @@ exports.new = function (req, res) {
     });
 };
 
-// Handle view contact info
+// Handle view camera info
 exports.view = function (req, res) {
     Camera.findById(req.params.id, function (err, camera) {
         if (err)
@@ -57,7 +57,8 @@ exports.view = function (req, res) {
 };
 
 // Handle update camera info
-exports.update = function (req, res) {Camera.findById(req.params.id, function (err, camera) {
+exports.update = function (req, res) {
+    Camera.findById(req.params.id, function (err, camera) {
         if (err)
             res.send(err);
 

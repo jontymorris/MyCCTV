@@ -32,7 +32,6 @@ var apiRoutes = require('./api/routes/cameraRoute')
 app.use('/api', apiRoutes);
 app.use('/api/images', express.static(config.saveLocation))
 
-
 // start server
 app.listen(config.port, function(){
     console.log(`[Webserver] live @ localhost:${config.port}/api`);
